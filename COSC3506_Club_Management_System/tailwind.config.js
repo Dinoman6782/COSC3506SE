@@ -13,7 +13,27 @@ module.exports = {
       fontFamily: {
         roboto: ["Roboto", "sans-serif"],
       },
+      textShadow: {
+        default: "-2px 2px 4px rgba(0, 0, 0, 0.25)",
+        md: "-4px 4px 8px rgba(0, 0, 0, 0.25)",
+        lg: "-6px 6px 12px rgba(0, 0, 0, 0.25)",
+      },
     },
   },
-  plugins: [],
+  plugins: [
+    function ({ addUtilities }) {
+      const newUtilities = {
+        ".text-shadow": {
+          textShadow: "-2px 2px 4px rgba(0, 0, 0, 0.25)",
+        },
+        ".text-shadow-md": {
+          textShadow: "-4px 4px 8px rgba(0, 0, 0, 0.25)",
+        },
+        ".text-shadow-lg": {
+          textShadow: "-6px 6px 12px rgba(0, 0, 0, 0.25)",
+        },
+      };
+      addUtilities(newUtilities, ["responsive", "hover"]);
+    },
+  ],
 };

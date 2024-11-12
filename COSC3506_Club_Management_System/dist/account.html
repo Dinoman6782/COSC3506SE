@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>login</title>
+    <title>Your Account</title>
     <link rel="stylesheet" href="./CSS/style.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -20,91 +20,20 @@
       rel="stylesheet"
     />
   </head>
-<style>
-      .spacer {
-        width: 100%;
-        background-repeat: no-repeat;
-        position: absolute;
-        background-size: cover;
-        bottom: 0;
-      }
-      .layer1 {
-        aspect-ratio: 1920/400;
-        background-image: url("./SVG/Curve\ 1.svg");
-        z-index: -1;
-      }
+  <style>
+    .w-20 {
+      width: 5rem;
+    }
+    .iconborder svg path {
+      transition: stroke 0.2s ease-in-out;
+    }
 
-      .w-20 {
-        width: 5rem;
-      }
-
-      .bubble {
-        aspect-ratio: 475/476;
-        background-image: url("./SVG/Design\ Bubble.svg");
-        z-index: 2;
-        transform-origin: bottom right;
-        transform: scale(0.85);
-      }
-      .iconborder svg path {
-        transition: stroke 0.2s ease-in-out;
-      }
-
-      .iconborder:hover svg path {
-        stroke: #ffffff;
-      }
-      .animate-width {
-        transition: width 1s ease-in-out;
-      }
-
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-        }
-        to {
-          opacity: 1;
-        }
-      }
-
-      .fade-in-left {
-        animation: fadeIn 2.5s cubic-bezier(0.99, 0, 1, 1);
-      }
-
-      .fade-in {
-        animation: fadeIn 2s ease-in-out;
-      }
-</style>
-  <body class="bg-gradient-to-r from-main-purple to-main-blue">
+    .iconborder:hover svg path {
+      stroke: #ffffff;
+    }
+  </style>
+  <body>
     <div class="relative">
-      <svg
-        class="spacer"
-        style="z-index: -2"
-        width="1920"
-        height="766"
-        viewBox="0 0 1920 766"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          fill-rule="evenodd"
-          clip-rule="evenodd"
-          d="M1920 494.074V766H0V16.2228C63.9294 -2.05408 127.477 -7.96441 173 14.8032C228.329 42.475 297.112 100.05 366.101 157.799C456.714 233.648 547.684 309.797 609 318.883C656.211 325.879 724.061 294.646 804.529 257.605C908.138 209.912 1032.67 152.588 1161 154.84C1389 158.841 1685 318.883 1769 374.897C1789.89 388.826 1847.77 433.654 1920 494.074Z"
-          fill="url(#paint0_linear_2342_90)"
-        />
-        <defs>
-          <linearGradient
-            id="paint0_linear_2342_90"
-            x1="2365"
-            y1="478.252"
-            x2="-243"
-            y2="480.798"
-            gradientUnits="userSpaceOnUse"
-          >
-            <stop offset="0.214764" stop-color="#9253FE" />
-            <stop offset="1" stop-color="#4F2499" />
-          </linearGradient>
-        </defs>
-      </svg>
-      <div class="spacer layer1"></div>
       <div
         class="fixed top-0 left-0 bg-white h-full w-20 shadow-lg z-20 overflow-y-auto"
       >
@@ -678,116 +607,50 @@
           </div>
         </div>
       </div>
-      <div class="flex justify-center items-center h-screen">
-        
-        <form action="">
-         <div
-         id="animatedDiv"
-         class="bg-white grid grid-cols-2 rounded-xl shadow-lg relative animate-width"
-         style="width: 10vw; height: 700px"
-       >
-       <div
-           class="col-start-1 bg-gradient-to-tl from-main-purple to-main-blue rounded-xl h-full w-full"
-         >
-           <div
-             class="col-start-2 spacer bubble pointer-events-none fade-in-left"
-           ></div>
-           <div
-             class="grid grid-rows-2 w-full h-full"
-             style="grid-template-rows: 70% 30%"
-           >
-             <div
-               class="row-start-1 flex flex-col justify-center items-center px-14 mt-24"
-             >
-               <div
-                 class="font-bold text-white fade-in-left"
-                 style="font-size: 6.5rem; line-height: 1"
-               >
-                 Don't have an <u>Account</u>?
-               </div>
-             </div>
-             <div
-               class="row-start-2 w-full h-full flex justify-center items-center pb-10"
-               style="z-index: 3"
-             >
-               <button
-                 class="font-roboto text-3xl bg-white text-main-blue rounded-xl hover:bg-gray-100 hover:shadow-md fade-in-left transition duration-300 ease-in-out"
-                 style="width: 13.5rem; height: 3.5rem"
-               >
-               <a href="./index.html" class="w-full h-full flex items-center justify-center">Sign Up</a>   
-               </button>
-             </div>
-           </div>
-         </div>
-         <div
-           class="col-start-2 grid grid-rows-2"
-           style="grid-template-rows: 70% 30%"
-         >
-           <div
-             class="row-start-1 w-full h-full flex flex-col justify-center items-center gap-24"
-           >
-             <div class="w-full px-7 fade-in">
-               <label
-                 class="text-lg font-roboto text-black tracking-widest pl-1"
-                 >Email</label
-               ><br />
-               <div class="relative">
-                 <span
-                   class="material-symbols-outlined absolute mt-3 ml-3 pointer-events-none"
-                 >
-                   mail
-                 </span>
-                 <input
-                   class="shadow appearance-none border rounded-xl w-full h-12 py-2 px-10 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                   id="email"
-                   type="email"
-                   placeholder="Something@user.com"
-                 />
-               </div>
-             </div>
-             <div class="w-full px-7 fade-in">
-               <label
-                 class="text-lg font-roboto text-black tracking-widest pl-1"
-                 >Password</label
-               ><br />
-               <div class="relative">
-                 <span
-                   class="material-symbols-outlined absolute mt-3 ml-3 pointer-events-none"
-                 >
-                   key
-                 </span>
-                 <input
-                   class="shadow appearance-none border rounded-xl w-full h-12 py-2 px-10 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                   id="password"
-                   type="password"
-                   placeholder="Password"
-                 />
-               </div>
-             </div>
-           </div>
-           <div
-             class="row-start-2 w-full h-full flex justify-center items-center pb-10"
-           >
-             <button
-               class="font-roboto text-3xl bg-main-purple text-white rounded-xl hover:bg-main-purple-shade hover:shadow-md fade-in transition duration-300 ease-in-out"
-               style="width: 13.5rem; height: 3.5rem"
-             >
-              Login
-             </button>
-           </div>
-         </div>
-         
-       </div>
-     </div>
-        </form>
-     </div>
+
+      <div
+        class="w-full h-screen pl-24 pr-4 py-5 bg-gradient-to-r from-main-purple to-main-blue"
+      >
+        <div class="bg-white w-full h-full rounded-lg hover:shadow-xl flex flex-col gap-28 px-5 justify-center">
+            <div class="flex justify-center items-center gap-32">
+                <div class="size-96 bg-gray-500 rounded-full"></div>
+                <div class="text-main-blue font-roboto font-extrabold text-9xl">Welcome, Tom Cat</div>
+            </div>
+            <div class="flex flex-col gap-10">
+                <div class="flex gap-80 items-center justify-center">
+                    <div>
+                        <label class="text-main-blue font-roboto font-thin text-2xl">First Name:</label> <br>
+                        <input type="text" placeholder="Tom" class="focus:outline-none text-lg text-main-blue placeholder-main-blue border-b-2 border-main-blue" onfocus="showButtons()" onblur="hideButtons()">
+                    </div>
+                    <div>
+                        <label class="text-main-blue font-roboto font-thin text-2xl">Last Name:</label> <br>
+                        <input type="text" placeholder="Cat" class="focus:outline-none text-lg text-main-blue placeholder-main-blue border-b-2 border-main-blue" onfocus="showButtons()" onblur="hideButtons()">
+                    </div>
+                </div>
+                <div class="flex gap-80 items-center justify-center">
+                    <div>
+                        <label class="text-main-blue font-roboto font-thin text-2xl">Email:</label> <br>
+                        <input type="email" placeholder="jerrysucks123@something.com" class="focus:outline-none text-lg text-main-blue placeholder-main-blue border-b-2 border-main-blue" onfocus="showButtons()" onblur="hideButtons()">
+                    </div>
+                    <div>
+                        <label class="text-main-blue font-roboto font-thin text-2xl">Phonenumber:</label> <br>
+                        <input type="text" placeholder="123-456-7890" class="focus:outline-none text-lg text-main-blue placeholder-main-blue border-b-2 border-main-blue" onfocus="showButtons()" onblur="hideButtons()">
+                    </div>
+                </div>
+                <div class="flex gap-80 items-center justify-center">
+                    <div>
+                        <label class="text-main-blue font-roboto font-thin text-2xl">Password:</label> <br>
+                        <input type="password" placeholder="************" class="focus:outline-none text-lg text-main-blue placeholder-main-blue border-b-2 border-main-blue" style="width:720px;" onfocus="showButtons()" onblur="hideButtons()">
+                    </div>
+                </div>
+                <div class="flex justify-center items-center gap-80" id="buttons" style="display: none;">
+                    <button class="bg-white shadow-2xl round w-40 h-10 rounded-lg text-main-blue border-2 border-gray-100 font-roboto font-medium">Discard Changes</button>
+                    <button class="bg-main-purple round w-40 h-10 rounded-lg text-white font-roboto font-medium">Save Changes</button>
+                </div>
+            </div>     
+      </div>
+    </div>
   </body>
-  <script>
-    window.addEventListener("load", () => {
-      const animatedDiv = document.getElementById("animatedDiv");
-      animatedDiv.style.width = "57.55vw";
-    });
-  </script>
   <script>
     document.addEventListener("DOMContentLoaded", function () {
       var accordionContent = document.getElementById("accordionContent");
@@ -820,4 +683,15 @@
       sidebar.classList.toggle("hidden");
     }
   </script>
+     <script>
+        function showButtons() {
+            document.getElementById('buttons').style.display = 'flex';
+        }
+    
+        function hideButtons() {
+            setTimeout(function() {
+                document.getElementById('buttons').style.display = 'none';
+            }, 200); // Delay to allow clicking the buttons
+        }
+    </script>
 </html>
