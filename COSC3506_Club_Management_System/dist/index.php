@@ -679,12 +679,12 @@
         </div>
       </div>
       <div class="flex justify-center items-center h-screen">
-       <form action="">
+       <form action="./signup.php" method="POST">
         <div
         id="animatedDiv"
         class="bg-white grid grid-cols-2 rounded-xl shadow-lg relative animate-width"
         style="width: 10vw; height: 700px"
-      >
+        >
         <div
           class="col-start-1 grid grid-rows-2"
           style="grid-template-rows: 70% 30%"
@@ -706,6 +706,7 @@
                 <input
                   class="shadow appearance-none border rounded-xl w-full h-12 py-2 px-10 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   id="email"
+                  name="email"
                   type="email"
                   placeholder="Something@user.com"
                 />
@@ -724,6 +725,7 @@
                   <input
                     class="shadow appearance-none border rounded-xl w-full h-12 py-2 px-10 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     id="firstname"
+                    name="firstname"
                     type="text"
                     placeholder="First Name"
                   />
@@ -743,6 +745,7 @@
                   <input
                     class="shadow appearance-none border rounded-xl w-full h-12 py-2 px-10 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     id="lastname"
+                    name="lastname"
                     type="text"
                     placeholder="Last Name"
                   />
@@ -760,7 +763,8 @@
                 </span>
                 <input
                   class="shadow appearance-none border rounded-xl w-full h-12 py-2 px-10 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  id="studentnumber"
+                  id="phone"
+                  name="phone"
                   type="text"
                   placeholder="Phone Number"
                 />
@@ -780,6 +784,7 @@
                 <input
                   class="shadow appearance-none border rounded-xl w-full h-12 py-2 px-10 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   id="password"
+                  name="password"
                   type="password"
                   placeholder="Password"
                 />
@@ -792,11 +797,14 @@
             <button
               class="font-roboto text-3xl bg-main-purple text-white rounded-xl hover:bg-main-purple-shade hover:shadow-md fade-in transition duration-300 ease-in-out"
               style="width: 13.5rem; height: 3.5rem"
+              name="submit"
+              type="submit"
             >
             Sign Up
             </button>
           </div>
         </div>
+      </form>
         <div
           class="col-start-2 bg-gradient-to-tl from-main-purple to-main-blue rounded-xl h-full w-full"
         >
@@ -832,7 +840,6 @@
         </div>
       </div>
     </div>
-       </form>
     </div>
   </body>
   <script>
