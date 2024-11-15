@@ -1,112 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>login</title>
-    <link rel="stylesheet" href="./CSS/style.css" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
-      rel="stylesheet"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Material+Icons"
-      rel="stylesheet"
-    />
-  </head>
-<style>
-      .spacer {
-        width: 100%;
-        background-repeat: no-repeat;
-        position: absolute;
-        background-size: cover;
-        bottom: 0;
-      }
-      .layer1 {
-        aspect-ratio: 1920/400;
-        background-image: url("./SVG/Curve\ 1.svg");
-        z-index: -1;
-      }
-
-      .w-20 {
-        width: 5rem;
-      }
-
-      .bubble {
-        aspect-ratio: 475/476;
-        background-image: url("./SVG/Design\ Bubble.svg");
-        z-index: 2;
-        transform-origin: bottom right;
-        transform: scale(0.85);
-      }
-      .iconborder svg path {
-        transition: stroke 0.2s ease-in-out;
-      }
-
-      .iconborder:hover svg path {
-        stroke: #ffffff;
-      }
-      .animate-width {
-        transition: width 1s ease-in-out;
-      }
-
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-        }
-        to {
-          opacity: 1;
-        }
-      }
-
-      .fade-in-left {
-        animation: fadeIn 2.5s cubic-bezier(0.99, 0, 1, 1);
-      }
-
-      .fade-in {
-        animation: fadeIn 2s ease-in-out;
-      }
-</style>
-  <body class="bg-gradient-to-r from-main-purple to-main-blue">
-    <div class="relative">
-      <svg
-        class="spacer"
-        style="z-index: -2"
-        width="1920"
-        height="766"
-        viewBox="0 0 1920 766"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          fill-rule="evenodd"
-          clip-rule="evenodd"
-          d="M1920 494.074V766H0V16.2228C63.9294 -2.05408 127.477 -7.96441 173 14.8032C228.329 42.475 297.112 100.05 366.101 157.799C456.714 233.648 547.684 309.797 609 318.883C656.211 325.879 724.061 294.646 804.529 257.605C908.138 209.912 1032.67 152.588 1161 154.84C1389 158.841 1685 318.883 1769 374.897C1789.89 388.826 1847.77 433.654 1920 494.074Z"
-          fill="url(#paint0_linear_2342_90)"
-        />
-        <defs>
-          <linearGradient
-            id="paint0_linear_2342_90"
-            x1="2365"
-            y1="478.252"
-            x2="-243"
-            y2="480.798"
-            gradientUnits="userSpaceOnUse"
-          >
-            <stop offset="0.214764" stop-color="#9253FE" />
-            <stop offset="1" stop-color="#4F2499" />
-          </linearGradient>
-        </defs>
-      </svg>
-      <div class="spacer layer1"></div>
-      <div
-        class="fixed top-0 left-0 bg-white h-full w-20 shadow-lg z-20 overflow-y-auto"
+<div
+        class="fixed top-0 left-0 bg-white h-full shadow-lg z-20 overflow-y-auto"
+        style="width: 4vw;"
       >
         <div class="flex flex-col gap-5 justify-center items-center mt-2">
           <div
@@ -418,7 +312,7 @@
           <div
             class="iconborder w-full h-11 hover:bg-main-purple hover:cursor-pointer hover:shadow-xl rounded-lg transition duration-300 ease-in-out"
           >
-            <a href="./home.html" class="w-full h-full">
+            <a href="./home.php" class="w-full h-full">
               <div
                 class="w-full h-full hover:text-white px-2 flex items-center justify-start transition duration-200 ease-in-out"
               >
@@ -449,7 +343,7 @@
           <div
             class="iconborder w-full h-11 hover:bg-main-purple hover:cursor-pointer hover:shadow-xl rounded-lg mt-10 transition duration-300 ease-in-out"
           >
-            <a href="./viewAnalytics.html" class="w-full h-full">
+            <a href="./viewAnalytics.php" class="w-full h-full">
               <div
                 class="w-full h-full flex items-center px-2 justify-start hover:text-white transition duration-200 ease-in-out"
               >
@@ -481,7 +375,7 @@
           <div
             class="iconborder w-full h-11 hover:bg-main-purple hover:cursor-pointer hover:shadow-xl rounded-lg mt-10 transition duration-300 ease-in-out"
           >
-            <a href="./addClub.html" class="w-full h-full">
+            <a href="./addClub.php" class="w-full h-full">
               <div
                 class="w-full h-full hover:text-white px-2 flex items-center justify-start transition duration-200 ease-in-out"
               >
@@ -545,12 +439,12 @@
             >
               <a
                 class="text-lg w-full flex justify-center items-center hover:bg-gray-100 rounded-md"
-                href="./index.html"
+                href="./index.php"
                 >Sign Up</a
               >
               <a
                 class="text-lg w-full flex justify-center items-center hover:bg-gray-100 rounded-md"
-                href="./login.html"
+                href="./login.php"
                 >Log In</a
               >
             </div>
@@ -558,7 +452,7 @@
           <div
             class="iconborder w-full h-11 hover:bg-main-purple hover:cursor-pointer hover:shadow-xl rounded-lg mt-10 transition duration-300 ease-in-out"
           >
-            <a href="./settings.html" class="w-full h-full">
+            <a href="./settings.php" class="w-full h-full">
               <div
                 class="w-full h-full hover:text-white px-2 flex items-center justify-start transition duration-200 ease-in-out"
               >
@@ -603,7 +497,7 @@
           <div
             class="iconborder w-full h-11 hover:bg-main-purple hover:cursor-pointer hover:shadow-xl rounded-lg mt-10 transition duration-300 ease-in-out"
           >
-            <a href="./about.html" class="w-full h-full">
+            <a href="./about.php" class="w-full h-full">
               <div
                 class="w-full h-full hover:text-white px-2 flex items-center justify-start transition duration-200 ease-in-out"
               >
@@ -670,7 +564,7 @@
             <a
               class="font-roboto text-sm px-5 font-light"
               style="padding-top: 0.15rem"
-              href="./account.html"
+              href="./account.php"
             >
               Sign In to view Account
             </a>
@@ -678,146 +572,3 @@
           </div>
         </div>
       </div>
-      <div class="flex justify-center items-center h-screen">
-        
-        <form action="">
-         <div
-         id="animatedDiv"
-         class="bg-white grid grid-cols-2 rounded-xl shadow-lg relative animate-width"
-         style="width: 10vw; height: 700px"
-       >
-       <div
-           class="col-start-1 bg-gradient-to-tl from-main-purple to-main-blue rounded-xl h-full w-full"
-         >
-           <div
-             class="col-start-2 spacer bubble pointer-events-none fade-in-left"
-           ></div>
-           <div
-             class="grid grid-rows-2 w-full h-full"
-             style="grid-template-rows: 70% 30%"
-           >
-             <div
-               class="row-start-1 flex flex-col justify-center items-center px-14 mt-24"
-             >
-               <div
-                 class="font-bold text-white fade-in-left"
-                 style="font-size: 6.5rem; line-height: 1"
-               >
-                 Don't have an <u>Account</u>?
-               </div>
-             </div>
-             <div
-               class="row-start-2 w-full h-full flex justify-center items-center pb-10"
-               style="z-index: 3"
-             >
-               <button
-                 class="font-roboto text-3xl bg-white text-main-blue rounded-xl hover:bg-gray-100 hover:shadow-md fade-in-left transition duration-300 ease-in-out"
-                 style="width: 13.5rem; height: 3.5rem"
-               >
-               <a href="./index.html" class="w-full h-full flex items-center justify-center">Sign Up</a>   
-               </button>
-             </div>
-           </div>
-         </div>
-         <div
-           class="col-start-2 grid grid-rows-2"
-           style="grid-template-rows: 70% 30%"
-         >
-           <div
-             class="row-start-1 w-full h-full flex flex-col justify-center items-center gap-24"
-           >
-             <div class="w-full px-7 fade-in">
-               <label
-                 class="text-lg font-roboto text-black tracking-widest pl-1"
-                 >Email</label
-               ><br />
-               <div class="relative">
-                 <span
-                   class="material-symbols-outlined absolute mt-3 ml-3 pointer-events-none"
-                 >
-                   mail
-                 </span>
-                 <input
-                   class="shadow appearance-none border rounded-xl w-full h-12 py-2 px-10 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                   id="email"
-                   type="email"
-                   placeholder="Something@user.com"
-                 />
-               </div>
-             </div>
-             <div class="w-full px-7 fade-in">
-               <label
-                 class="text-lg font-roboto text-black tracking-widest pl-1"
-                 >Password</label
-               ><br />
-               <div class="relative">
-                 <span
-                   class="material-symbols-outlined absolute mt-3 ml-3 pointer-events-none"
-                 >
-                   key
-                 </span>
-                 <input
-                   class="shadow appearance-none border rounded-xl w-full h-12 py-2 px-10 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                   id="password"
-                   type="password"
-                   placeholder="Password"
-                 />
-               </div>
-             </div>
-           </div>
-           <div
-             class="row-start-2 w-full h-full flex justify-center items-center pb-10"
-           >
-             <button
-               class="font-roboto text-3xl bg-main-purple text-white rounded-xl hover:bg-main-purple-shade hover:shadow-md fade-in transition duration-300 ease-in-out"
-               style="width: 13.5rem; height: 3.5rem"
-             >
-              Login
-             </button>
-           </div>
-         </div>
-         
-       </div>
-     </div>
-        </form>
-     </div>
-  </body>
-  <script>
-    window.addEventListener("load", () => {
-      const animatedDiv = document.getElementById("animatedDiv");
-      animatedDiv.style.width = "57.55vw";
-    });
-  </script>
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      var accordionContent = document.getElementById("accordionContent");
-      var sidebar = document.getElementById("sidebar");
-
-      // Ensure the overflow-y-auto class is not applied initially
-      sidebar.classList.remove("overflow-y-auto");
-
-      document
-        .getElementById("loginSignup")
-        .addEventListener("click", function () {
-          accordionContent.classList.toggle("hidden");
-
-          // Toggle overflow-y-auto class on the sidebar
-          if (!accordionContent.classList.contains("hidden")) {
-            sidebar.classList.add("overflow-y-auto");
-          } else {
-            sidebar.classList.remove("overflow-y-auto");
-          }
-        });
-    });
-  </script>
-  <script>
-    function toggleNav() {
-      const nav = document.querySelector(
-        ".fixed.top-0.left-0.bg-white.h-full.w-20"
-      );
-      const sidebar = document.getElementById("sidebar");
-      nav.classList.toggle("hidden");
-      sidebar.classList.toggle("hidden");
-    }
-  </script>
-</html>
