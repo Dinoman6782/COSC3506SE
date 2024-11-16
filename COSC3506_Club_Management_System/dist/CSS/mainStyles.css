@@ -1,0 +1,19 @@
+.spacer {
+  width: 100%;
+  background-repeat: no-repeat;
+  position: absolute;
+  background-size: cover;
+  bottom: 0;
+}
+
+.w-20 {
+  width: 5rem;
+}
+
+.iconborder svg path {
+  transition: stroke 0.2s ease-in-out;
+}
+
+.iconborder:hover svg path {
+  stroke: #ffffff;
+}
