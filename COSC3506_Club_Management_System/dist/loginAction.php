@@ -1,31 +1,25 @@
 <?php
-include 'db_connection.php';
+If(isset($_POST["login"]))
+{
+$email = $_POST["email"];
+$password = $_POST["password"];
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = $_POST['username'];
-    $password = $_POST['password'];
+require_once './database/db_connection.php';
+require_once './database/functions.php';
 
-    // Retrieve user from the database
-    $query = "SELECT * FROM users WHERE username = ?";
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param("s", $username);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    if ($result->num_rows > 0) {
-        $user = $result->fetch_assoc();
-        
-        // Verify the password
-        if (password_verify($password, $user['password'])) {
-            echo "Login successful!";
-        } else {
-            echo "Invalid password!";
-        }
-    } else {
-        echo "No user found with that username!";
-    }
-
-    $stmt->close();
-    $conn->close();
+if (emptyInputLogin($email, $password) !== false)
+{
+    header("location: ./dist/login.php?error=emptyinput");
+    exit();
 }
+
+loginUser($conn, $email, $password);
+
+}
+else
+{
+    header("location: ./index.php");
+    exit();
+}
+
 ?>

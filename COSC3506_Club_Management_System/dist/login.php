@@ -73,7 +73,7 @@
                </button>
              </div>
         </div>
-      <form action="" method="">
+      <form action="./loginAction.php" method="POST">
         <div class="h-full w-full col-start-2 row-start-1 flex flex-col justify-center items-center gap-24">
         <div class="w-full px-7 fade-in">
                <label

@@ -1,3 +1,17 @@
+<?php
+  session_start();
+?>
+<?php
+if(!isset($_SESSION["user_id"])) 
+{
+    header("Location: ./home.php");
+    exit();
+}
+?>
+<?php require_once './database/db_connection.php';
+  require_once './adminBoardDisplay.php'; 
+  ?>
+
 <?php include './Includes/pageHeader.php' ?>
   <style>
     .lineCurve1 {
@@ -634,64 +648,55 @@
               </div>
             </div>
             <div class="w-full px-10">
-              <table class="table-auto w-full text-left">
-                <thead>
-                  <tr>
-                    <th class="px-4 py-2 border-b">FIRST NAME</th>
-                    <th class="px-4 py-2 border-b">LAST NAME</th>
-                    <th class="px-4 py-2 border-b">EMAIL</th>
-                    <th class="px-4 py-2 border-b">PHONE NUMBER</th>
-                    <th class="px-4 py-2 border-b">STATUS</th>
-                    <th class="px-4 py-2 border-b">ACCEPT</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td class="border-b px-4 py-2 font-bold">Lindsay</td>
-                    <td class="border-b px-4 py-2 font-bold">Walton</td>
-                    <td class="border-b px-4 py-2">walton_148@gmail.com</td>
-                    <td class="border-b px-4 py-2">123-456-7890</td>
-                    <td class="border-b px-4 py-2">
-                      <div class="w-1/2 rounded-lg bg-green-500">ACCEPTED</div>
-                    </td>
-                    <td class="border-b px-4 py-2">
-                      <div class="flex items-center cursor-pointer relative">
-                        <label
-                          class="flex items-center cursor-pointer relative"
-                        >
-                          <input
-                            type="checkbox"
-                            checked
-                            class="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-300 checked:bg-slate-800 checked:border-slate-800"
-                            id="check"
-                          />
-                          <span
-                            class="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none"
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              class="h-3.5 w-3.5"
-                              viewBox="0 0 20 20"
-                              fill="currentColor"
-                              stroke="currentColor"
-                              stroke-width="1"
-                            >
-                              <path
-                                fill-rule="evenodd"
-                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                clip-rule="evenodd"
-                              ></path>
-                            </svg>
-                          </span>
-                        </label>
-                      </div>
-                    </td>
-                    <td class="border-none px-4 py-2">
-                      <div class="text-main-purple">Edit</div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+    <table class="table-auto w-full text-left">
+        <thead>
+            <tr>
+                <th class="px-4 py-2 border-b">FIRST NAME</th>
+                <th class="px-4 py-2 border-b">LAST NAME</th>
+                <th class="px-4 py-2 border-b">EMAIL</th>
+                <th class="px-4 py-2 border-b">PHONE NUMBER</th>
+                <th class="px-4 py-2 border-b">STATUS</th>
+                <th class="px-4 py-2 border-b">ACCEPT</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php
+            if ($Adminresult->num_rows > 0) {
+                // Output data of each row
+                while($row = $Adminresult->fetch_assoc()) {
+                    echo "<tr>";
+                    echo "<td class='border-b px-4 py-2 font-bold'>" . $row["first Name"] . "</td>";
+                    echo "<td class='border-b px-4 py-2 font-bold'>" . $row["last Name"] . "</td>";
+                    echo "<td class='border-b px-4 py-2'>" . $row["email"] . "</td>";
+                    echo "<td class='border-b px-4 py-2'>" . $row["phone"] . "</td>";
+                    echo "<td class='border-b px-4 py-2'>";
+                    if ($row["accepted"]) {
+                        echo "<div class='w-1/2 rounded-lg bg-green-500'>ACCEPTED</div>";
+                    } else {
+                        echo "<div class='w-1/2 rounded-lg bg-yelow-500'>PENDING</div>";
+                    }
+                    echo "</td>";
+                    echo "<td class='border-b px-4 py-2'>";
+                    echo "<div class='flex items-center cursor-pointer relative'>";
+                    echo "<label class='flex items-center cursor-pointer relative'>";
+                    echo "<input type='checkbox' class='peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-300 checked:bg-slate-800 checked:border-slate-800' id='check' " . ($row["accepted"] ? "checked" : "") . " />";
+                    echo "<span class='absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none'>";
+                    echo "<svg xmlns='http://www.w3.org/2000/svg' class='h-3.5 w-3.5' viewBox='0 0 20 20' fill='currentColor' stroke='currentColor' stroke-width='1'>";
+                    echo "<path fill-rule='evenodd' d='M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z' clip-rule='evenodd'></path>";
+                    echo "</svg>";
+                    echo "</span>";
+                    echo "</label>";
+                    echo "</div>";
+                    echo "</td>";
+                    echo "</tr>";
+                }
+            } else {
+                echo "<tr><td colspan='6'>No results found</td></tr>";
+            }
+            $conn->close();
+            ?>
+        </tbody>
+    </table>
             </div>
           </div>
         </div>

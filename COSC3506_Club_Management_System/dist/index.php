@@ -37,7 +37,7 @@
   <body class="bg-gradient-to-r from-main-purple to-main-blue">
     <div class="relative">
     <?php include './Includes/signupSVGBG.php'; ?>
-    <?php include './Includes/navBar.php'; ?>
+    <?php require_once './Includes/navBar.php'; ?>
       <div class="flex justify-center items-center h-screen">
        <form action="./signupAction.php" method="POST">
         <div

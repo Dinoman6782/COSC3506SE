@@ -1,3 +1,10 @@
+<?php
+if(!isset($_SESSION["user_id"])) 
+{
+    header("Location: ./index.php");
+    exit();
+}
+?>
 <?php include './Includes/pageHeader.php' ?>
   <body>
   <?php include './Includes/navBar.php' ?>

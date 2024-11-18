@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 function toggleNav() {
   const nav = document.querySelector(
-    ".fixed.top-0.left-0.bg-white.h-full.w-20"
+    ".fixed.top-0.left-0.bg-white.h-full.shadow-lg.z-20.overflow-y-auto"
   );
   const sidebar = document.getElementById("sidebar");
   nav.classList.toggle("hidden");

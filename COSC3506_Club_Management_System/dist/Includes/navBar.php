@@ -439,7 +439,7 @@
             >
               <a
                 class="text-lg w-full flex justify-center items-center hover:bg-gray-100 rounded-md"
-                href="./index.php"
+                href="COSC3506_Club_Management_System\dist\index.php"
                 >Sign Up</a
               >
               <a

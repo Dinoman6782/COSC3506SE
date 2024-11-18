@@ -49,6 +49,83 @@ function createUser($conn, $firstname, $lastname, $email, $phone, $password)
     header("location: ../dist/index.php?message=waitforapproval");
 }
 
+function uidExists($conn, $email)
+{
+    $sql = "SELECT * FROM users WHERE email = ?;";
+
+    $stmt = mysqli_stmt_init($conn);
+
+    if(!mysqli_stmt_prepare($stmt, $sql))
+    {
+        header("location: ../dist/login.php?error=stmtFailed");
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "s", $email);
+    mysqli_stmt_execute($stmt);
+
+    $resultData = mysqli_stmt_get_result($stmt);
+    if($row = mysqli_fetch_assoc($resultData))
+    {
+        return $row;
+    }
+    else{
+        $result = false;
+        return $result;
+    }
+
+    mysqli_stmt_close($stmt);
+}
+
+function loginUser($conn, $email, $password)
+{
+    $uidExists = uidExists($conn, $email);
+
+    if($uidExists === false)
+    {
+        header("location: ../dist/login.php?error=wronglogin");
+        exit();
+    }
+
+    $pwdHashed = $uidExists["password"];
+
+    $checkpwd = password_verify($password, $pwdHashed);
+
+    if ($checkpwd === false)
+    {
+
+        header("location: ../dist/login.php?error=wronglogin");
+    }
+    else if ($checkpwd === true)
+    {
+        session_start();
+
+        $_SESSION["user_id"] = $uidExists["user_id"];
+        $_SESSION["email"] = $uidExists["email"];
+        $_SESSION["phone"] = $uidExists["phone"];
+        $_SESSION["first Name"] = $uidExists["first Name"];
+        $_SESSION["last Name"] = $uidExists["last Name"];
+        $_SESSION["login_time"] = time();
+        $_SESSION["role"] = $uidExists["role"];
+        header("location: ../dist/viewAnalytics.php");
+    }
+}
+
+function emptyInputLogin($email, $password)
+{
+    $result;
+    if(empty($email) || empty($password))
+    {
+        $result = true;
+    }
+    else
+    {
+        $result = false;
+    }
+    return $result;
+}
+
+
 // Function to check if the user can log in
 function canLogin($conn, $email)
 {
