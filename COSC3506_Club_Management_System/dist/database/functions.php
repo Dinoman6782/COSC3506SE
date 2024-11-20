@@ -1,11 +1,5 @@
 <?php
 require 'db_connection.php';
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
-
-//require 'C:\Users\muhai\Documents\COSC3506SE\PHPMailer\src\Exception.php';
-//require 'C:\Users\muhai\Documents\COSC3506SE\PHPMailer\src\PHPMailer.php';
-//require 'C:\Users\muhai\Documents\COSC3506SE\PHPMailer\src\SMTP.php';
 
 // Function to create a new user
 function createUser($conn, $firstname, $lastname, $email, $phone, $password)
@@ -139,54 +133,4 @@ function emptyInputLogin($email, $password)
 }
 
 
-// Function to check if the user can log in
-function canLogin($conn, $email)
-{
-    $sql = "SELECT `accepted` FROM `users` WHERE `email` = ?";
-    $stmt = mysqli_stmt_init($conn);
 
-    if (!mysqli_stmt_prepare($stmt, $sql)) {
-        return false; // Statement failed
-    }
-
-    mysqli_stmt_bind_param($stmt, "s", $email);
-    mysqli_stmt_execute($stmt);
-    $result = mysqli_stmt_get_result($stmt);
-    $row = mysqli_fetch_assoc($result);
-
-    mysqli_stmt_close($stmt);
-
-    return $row && $row['accepted'] == 1;
-}
-
-// Function to send an approval email
-function sendApprovalEmail($email, $firstName)
-{
-    $mail = new PHPMailer(true);
-
-    try {
-        // Server settings
-        $mail->isSMTP();
-        $mail->Host = 'smtp.gmail.com'; // Replace with your mail server
-        $mail->SMTPAuth = true;
-        $mail->Username = 'mohaisinshahadu@gmail.com'; // Your email
-        $mail->Password = 'mkqe dqnz qmmh sxki'; // Your email password
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-        $mail->Port = 587;
-
-        // Recipients
-        $mail->setFrom('mohaisinshahadu@gmail.com', 'CEMS');
-        $mail->addAddress($email, $firstName);
-
-        // Content
-        $mail->isHTML(true);
-        $mail->Subject = 'Account Approved';
-        $mail->Body    = "Dear $firstName, <br>Your account has been approved. You can now log in and access your account.<br>Best Regards, <br>YourAppName Team";
-
-        $mail->send();
-        return true;
-    } catch (Exception $e) {
-        error_log("Email failed to send: " . $mail->ErrorInfo);
-        return false;
-    }
-}
