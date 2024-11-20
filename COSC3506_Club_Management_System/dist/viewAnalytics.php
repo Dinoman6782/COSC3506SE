@@ -4,7 +4,7 @@
 <?php
 if(!isset($_SESSION["user_id"])) 
 {
-    header("Location: ./home.php");
+    header("Location: ./index.php");
     exit();
 }
 ?>
@@ -673,7 +673,7 @@ if(!isset($_SESSION["user_id"]))
                     if ($row["accepted"]) {
                         echo "<div class='w-1/2 rounded-lg bg-green-500'>ACCEPTED</div>";
                     } else {
-                        echo "<div class='w-1/2 rounded-lg bg-yelow-500'>PENDING</div>";
+                        echo "<div class='w-1/2 rounded-lg bg-yellow-500'>PENDING</div>";
                     }
                     echo "</td>";
                     echo "<td class='border-b px-4 py-2'>";

@@ -118,18 +118,19 @@
             <div class="w-full px-7 fade-in">
               <label
                 class="text-lg font-roboto text-black tracking-widest pl-1"
-                >Phone Number</label
+                >Phone Number (Optional)</label
               ><br />
               <div class="relative">
                 <span class="material-symbols-outlined absolute mt-3 ml-3">
-                  id_card
+                  phone
                 </span>
                 <input
                   class="shadow appearance-none border rounded-xl w-full h-12 py-2 px-10 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   id="phone"
                   name="phone"
                   type="text"
-                  placeholder="Phone Number"
+                  placeholder="(123)-456-7890"
+                  oninput="formatPhoneNumber(this)"
                 />
               </div>
             </div>
@@ -150,18 +151,30 @@
                   name="password"
                   type="password"
                   placeholder="Password"
+                  oninput="checkPasswordLength()"
                   required
                 />
               </div>
             </div>
           </div>
           <div
-            class="row-start-2 w-full h-full flex justify-center items-center pb-10"
+            class="row-start-2 w-full h-full flex flex-col items-center"
           >
+          <div id="errorMessage" class="flex items-center justify-center pt-3 pb-5 gap-2 hidden">
+            <span class="material-symbols-outlined text-red-500">
+              cancel
+            </span>
+            <label
+                class="text-normal font-roboto text-red-500 tracking-widest font-thin"
+                id="errorLabel"
+                ></label
+            >
+          </div>
             <button
-              class="font-roboto text-3xl bg-main-purple text-white rounded-xl hover:bg-main-purple-shade hover:shadow-md fade-in transition duration-300 ease-in-out"
+              class="mt-14 font-roboto text-3xl bg-main-purple text-white rounded-xl hover:bg-main-purple-shade hover:shadow-md fade-in transition duration-300 ease-in-out"
               style="width: 13.5rem; height: 3.5rem"
               name="submit"
+              id="signUpButton"
               type="submit"
             >
             Sign Up
@@ -208,4 +221,6 @@
   </body>
  <script src="./JS/navbar.js"></script>
  <script src="./JS/signup_login_animatedBG.js"></script>
+ <script src="./JS/phoneFormat.js"></script>
+ <script src="./JS/errorHandling.js"></script>
 </html>

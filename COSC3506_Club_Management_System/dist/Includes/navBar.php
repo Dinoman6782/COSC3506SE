@@ -403,7 +403,11 @@
               </div>
             </a>
           </div>
-          <div
+          <?php
+          if(!isset($_SESSION["user_id"]))
+          {
+            echo
+            '<div
             id="loginSignup"
             class="iconborder w-full h-11 hover:bg-main-purple hover:cursor-pointer hover:shadow-xl rounded-lg mt-10 transition duration-300 ease-in-out"
           >
@@ -448,7 +452,44 @@
                 >Log In</a
               >
             </div>
-          </div>
+          </div>';
+          }
+          else
+          {
+            echo
+            '<div
+            class="iconborder w-full h-11 hover:bg-main-purple hover:cursor-pointer hover:shadow-xl rounded-lg mt-10 transition duration-300 ease-in-out"
+          >
+          <a href="./logout.php" class="w-full h-full">
+            <div
+              class="w-full h-full hover:text-white px-2 flex items-center justify-start transition duration-200 ease-in-out"
+            >
+              <svg
+                width="28"
+                height="28"
+                viewBox="0 0 34 34"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M21.25 4.25H26.9167C27.6681 4.25 28.3888 4.54851 28.9201 5.07986C29.4515 5.61122 29.75 6.33189 29.75 7.08333V26.9167C29.75 27.6681 29.4515 28.3888 28.9201 28.9201C28.3888 29.4515 27.6681 29.75 26.9167 29.75H21.25M14.1667 24.0833L21.25 17M21.25 17L14.1667 9.91667M21.25 17H4.25"
+                  stroke="#1E1E1E"
+                  stroke-width="3"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              <div
+                class="font-roboto text-xl px-10 font-medium"
+                style="padding-top: 0.15rem"
+              >
+                Logout
+              </div>
+            </div>
+            </a>
+          </div>';
+          }
+          ?>
           <div
             class="iconborder w-full h-11 hover:bg-main-purple hover:cursor-pointer hover:shadow-xl rounded-lg mt-10 transition duration-300 ease-in-out"
           >

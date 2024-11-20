@@ -3,27 +3,29 @@ require 'db_connection.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-require 'C:\Users\muhai\Documents\COSC3506SE\PHPMailer\src\Exception.php';
-require 'C:\Users\muhai\Documents\COSC3506SE\PHPMailer\src\PHPMailer.php';
-require 'C:\Users\muhai\Documents\COSC3506SE\PHPMailer\src\SMTP.php';
+//require 'C:\Users\muhai\Documents\COSC3506SE\PHPMailer\src\Exception.php';
+//require 'C:\Users\muhai\Documents\COSC3506SE\PHPMailer\src\PHPMailer.php';
+//require 'C:\Users\muhai\Documents\COSC3506SE\PHPMailer\src\SMTP.php';
 
 // Function to create a new user
 function createUser($conn, $firstname, $lastname, $email, $phone, $password)
 {
-    // Check if email already exists
-    $emailCheckSql = "SELECT * FROM `users` WHERE `email` = ?";
+    // Check if email or phone already exists
+    $emailPhoneCheckSql = "SELECT * FROM `users` WHERE `email` = ? OR (`phone` = ? AND `phone` IS NOT NULL);";
     $stmt = mysqli_stmt_init($conn);
 
-    if (!mysqli_stmt_prepare($stmt, $emailCheckSql)) {
+    if (!mysqli_stmt_prepare($stmt, $emailPhoneCheckSql)) 
+    {
         header("location: ../dist/index.php?error=stmtfailed");
         exit();
     }
 
-    mysqli_stmt_bind_param($stmt, "s", $email);
+    mysqli_stmt_bind_param($stmt, "ss", $email, $phone);
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
 
-    if (mysqli_num_rows($result) > 0) {
+    if (mysqli_num_rows($result) > 0) 
+    {
         header("location: ../dist/index.php?error=emailexists");
         exit();
     }
@@ -69,7 +71,8 @@ function uidExists($conn, $email)
     {
         return $row;
     }
-    else{
+    else
+    {
         $result = false;
         return $result;
     }
@@ -96,18 +99,28 @@ function loginUser($conn, $email, $password)
 
         header("location: ../dist/login.php?error=wronglogin");
     }
-    else if ($checkpwd === true)
+    else
     {
-        session_start();
 
-        $_SESSION["user_id"] = $uidExists["user_id"];
-        $_SESSION["email"] = $uidExists["email"];
-        $_SESSION["phone"] = $uidExists["phone"];
-        $_SESSION["first Name"] = $uidExists["first Name"];
-        $_SESSION["last Name"] = $uidExists["last Name"];
-        $_SESSION["login_time"] = time();
-        $_SESSION["role"] = $uidExists["role"];
-        header("location: ../dist/viewAnalytics.php");
+        $accepted = $uidExists["accepted"];
+        
+        if($accepted == false)
+        {
+            header("location: ../dist/login.php?error=pendingApproval");
+        }
+        else
+        {
+            session_start();
+
+            $_SESSION["user_id"] = $uidExists["user_id"];
+            $_SESSION["email"] = $uidExists["email"];
+            $_SESSION["phone"] = $uidExists["phone"];
+            $_SESSION["first Name"] = $uidExists["first Name"];
+            $_SESSION["last Name"] = $uidExists["last Name"];
+            $_SESSION["login_time"] = time();
+            $_SESSION["role"] = $uidExists["role"];
+            header("location: ../dist/viewAnalytics.php"); 
+        }
     }
 }
 
