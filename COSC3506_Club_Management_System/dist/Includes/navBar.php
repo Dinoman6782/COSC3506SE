@@ -205,7 +205,7 @@
             </a>
           </div>
           <div
-            class="iconborder size-12 hover:bg-main-purple hover:cursor-pointer hover:shadow-xl rounded-lg transition duration-300 ease-in-out mt-52"
+            class="iconborder size-12 hover:bg-main-purple hover:cursor-pointer hover:shadow-xl rounded-lg transition duration-300 ease-in-out mt-32"
           >
             <a href="#" class="w-full h-full flex justify-center items-center">
               <svg
@@ -568,7 +568,7 @@
             </a>
           </div>
           <div
-            class="w-full h-20 px-4 flex items-center justify-start bg-main-purple rounded-lg mt-32 hover:shadow-xl transition-shadow duration-300"
+            class="w-full h-20 px-4 flex items-center justify-start bg-main-purple rounded-lg mt-10 hover:shadow-xl transition-shadow duration-300"
           >
             <svg
               width="28"

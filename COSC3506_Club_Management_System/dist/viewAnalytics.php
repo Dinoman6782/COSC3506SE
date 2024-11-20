@@ -7,12 +7,13 @@ if(!isset($_SESSION["user_id"]))
     header("Location: ./index.php");
     exit();
 }
-?>
-<?php require_once './database/db_connection.php';
-  require_once './adminBoardDisplay.php'; 
-  ?>
 
-<?php include './Includes/pageHeader.php' ?>
+require_once './database/db_connection.php';
+require_once './database/functions.php'; 
+
+
+include './Includes/pageHeader.php' 
+?>
   <style>
     .lineCurve1 {
       width: 100%;
@@ -661,9 +662,10 @@ if(!isset($_SESSION["user_id"]))
         </thead>
         <tbody>
             <?php
-            if ($Adminresult->num_rows > 0) {
+            $adminResult = displayAdmin($conn);
+            if ($adminResult->num_rows > 0) {
                 // Output data of each row
-                while($row = $Adminresult->fetch_assoc()) {
+                while($row = $adminResult->fetch_assoc()) {
                     echo "<tr>";
                     echo "<td class='border-b px-4 py-2 font-bold'>" . $row["first Name"] . "</td>";
                     echo "<td class='border-b px-4 py-2 font-bold'>" . $row["last Name"] . "</td>";

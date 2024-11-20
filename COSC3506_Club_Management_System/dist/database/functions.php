@@ -45,6 +45,19 @@ function createUser($conn, $firstname, $lastname, $email, $phone, $password)
     header("location: ../dist/index.php?message=waitforapproval");
 }
 
+function displayAdmin($conn)
+{
+    $sql = "SELECT `first Name`, `last Name`, `email`, `phone`, `accepted` FROM users";
+
+    $adminResult = mysqli_query($conn, $sql);
+    $rowCheck = mysqli_num_rows($adminResult);
+    if($rowCheck > 0)
+    {
+        return $adminResult;
+    }
+    return null;
+}
+
 function uidExists($conn, $email)
 {
     $sql = "SELECT * FROM users WHERE email = ?;";
@@ -120,7 +133,7 @@ function loginUser($conn, $email, $password)
 
 function emptyInputLogin($email, $password)
 {
-    $result;
+    $result = false;
     if(empty($email) || empty($password))
     {
         $result = true;
