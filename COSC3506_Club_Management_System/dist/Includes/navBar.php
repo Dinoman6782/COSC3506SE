@@ -312,7 +312,20 @@
           <div
             class="iconborder w-full h-11 hover:bg-main-purple hover:cursor-pointer hover:shadow-xl rounded-lg transition duration-300 ease-in-out"
           >
+          <?php
+          if(!isset($_SESSION["user_id"]))
+          {
+            echo'
+            <a href="./index.php" class="w-full h-full">
+            ';
+          }
+          else
+          {
+            echo'
             <a href="./home.php" class="w-full h-full">
+            ';
+          }
+            ?>
               <div
                 class="w-full h-full hover:text-white px-2 flex items-center justify-start transition duration-200 ease-in-out"
               >
@@ -443,7 +456,7 @@
             >
               <a
                 class="text-lg w-full flex justify-center items-center hover:bg-gray-100 rounded-md"
-                href="COSC3506_Club_Management_System\dist\index.php"
+                href="./signup.php"
                 >Sign Up</a
               >
               <a

@@ -69,7 +69,7 @@
                  class="font-roboto text-3xl bg-white text-main-blue rounded-xl hover:bg-gray-100 hover:shadow-md fade-in-left transition duration-300 ease-in-out"
                  style="width: 13.5rem; height: 3.5rem"
                >
-               <a href="./index.php" class="w-full h-full flex items-center justify-center">Sign Up</a>   
+               <a href="./signup.php" class="w-full h-full flex items-center justify-center">Sign Up</a>   
                </button>
              </div>
         </div>

@@ -1,4 +1,6 @@
-<?php include './Includes/pageHeader.php' ?>
+<?php 
+session_start();
+include './Includes/pageHeader.php' ?>
   <body>
     <?php include './Includes/navBar.php' ?>
   <!-- Make sure to edit this page, be sure to: add images, make the background look better, add dev cards and add contact info -->
