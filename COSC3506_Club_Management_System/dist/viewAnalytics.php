@@ -1,19 +1,62 @@
 <?php
-  session_start();
-?>
-<?php
-if(!isset($_SESSION["user_id"])) 
-{
+session_start();
+if (!isset($_SESSION["user_id"])) {
     header("Location: ./login.php");
     exit();
 }
 
 require_once './database/db_connection.php';
-require_once './database/functions.php'; 
+require_once './database/functions.php';
 
+$user_id = $_SESSION['user_id'];
 
-include './Includes/pageHeader.php' 
+$adminResult = displayAdmin($conn);
+
+// Prepared statement for event query
+$eventSQL = "SELECT eventlist.event_Id, eventlist.eventName, eventlist.eventDescription, eventlist.date, eventlist.startTime, eventlist.endTime, clublist.clubName, clublist.clubOwner 
+             FROM userclub 
+             JOIN clublist ON userclub.club_id = clublist.club_id 
+             JOIN eventlist ON clublist.club_id = eventlist.club_Id 
+             WHERE userclub.user_id = ?";
+$stmt = $conn->prepare($eventSQL);
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$eventResults = $stmt->get_result();
+
+// Prepared statement for attendance query
+$attendanceQuery = "SELECT event_id FROM userevent WHERE user_id = ?";
+$stmt = $conn->prepare($attendanceQuery);
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$attendanceResult = $stmt->get_result();
+
+$attendingEvents = [];
+while ($attendanceRow = $attendanceResult->fetch_assoc()) {
+    $attendingEvents[] = $attendanceRow['event_id'];
+}
+
+$userClubsSQL = "SELECT club_id FROM userclub WHERE user_id = ?";
+$stmt = $conn->prepare($userClubsSQL);
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$userClubsResult = $stmt->get_result();
+
+$userClubs = [];
+while ($row = $userClubsResult->fetch_assoc()) {
+    $userClubs[] = $row['club_id'];
+}
+
+// Fetch the list of all clubs
+$clubSQL = "SELECT clublist.club_id, clublist.clubName, clublist.clubOwner, clublist.clubDescription, clublist.ownerEmail, clublist.monthlyPayment, 
+COUNT(userclub.user_id) AS members FROM clublist LEFT JOIN userclub ON clublist.club_id = userclub.club_id GROUP BY clublist.club_id"; 
+$clubStmt = $conn->prepare($clubSQL); 
+$clubStmt->execute(); 
+$clubResults = $clubStmt->get_result();
+
+include './Includes/pageHeader.php';
 ?>
+
+
   <style>
     .lineCurve1 {
       width: 100%;
@@ -470,240 +513,243 @@ include './Includes/pageHeader.php'
               </div>
             </div>
           </div>
-          <div
-            class="w-full bg-white shadowMain rounded-lg"
-            style="height: 61rem"
-          >
-            <div class="w-full p-10 flex items-center gap-10">
-              <div class="text-main-blue font-roboto font-black text-5xl">
-                EVENT LIST
-              </div>
-              <div class="flex gap-3">
-                <div class="w-12 h-6 rounded-full bg-red-600"></div>
-                <div class="font-roboto">TOMORROW</div>
-              </div>
-              <div class="flex gap-3">
-                <div class="w-12 h-6 rounded-full bg-yellow-500"></div>
-                <div class="font-roboto">THIS WEEK</div>
-              </div>
-              <div class="flex gap-3">
-                <div class="w-12 h-6 rounded-full bg-green-500"></div>
-                <div class="font-roboto">THIS MONTH</div>
-              </div>
-            </div>
-            <div class="w-full px-10">
-              <table class="table-auto w-full text-left">
-                <thead>
-                  <tr>
+<div class="w-full bg-white shadowMain rounded-lg" style="height: 61rem">
+    <div class="w-full p-10 flex items-center gap-10">
+        <div class="text-main-blue font-roboto font-black text-5xl">EVENT LIST</div>
+        <div class="flex gap-3">
+            <div class="w-12 h-6 rounded-full bg-red-600"></div>
+            <div class="font-roboto">TOMORROW</div>
+        </div>
+        <div class="flex gap-3">
+            <div class="w-12 h-6 rounded-full bg-yellow-500"></div>
+            <div class="font-roboto">THIS WEEK</div>
+        </div>
+        <div class="flex gap-3">
+            <div class="w-12 h-6 rounded-full bg-green-500"></div>
+            <div class="font-roboto">THIS MONTH</div>
+        </div>
+    </div>
+    <div class="w-full px-10">
+        <table class="table-auto w-full text-left">
+            <thead>
+                <tr>
                     <th class="px-4 py-2 border-b">CLUB NAME</th>
                     <th class="px-4 py-2 border-b">OWNER</th>
                     <th class="px-4 py-2 border-b">EVENT DESCRIPTION</th>
                     <th class="px-4 py-2 border-b">DATE</th>
                     <th class="px-4 py-2 border-b">TIME</th>
                     <th class="px-4 py-2 border-b">ATTENDING</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td class="border-b px-4 py-2 font-bold">
-                      Super Cool Club
-                    </td>
-                    <td class="border-b px-4 py-2 font-bold">Lindsay Walton</td>
+                </tr>
+            </thead>
+            <tbody>
+                <?php while ($eventRow = $eventResults->fetch_assoc()): ?>
+                <tr>
+                    <td class="border-b px-4 py-2 font-bold"><?php echo htmlspecialchars($eventRow['clubName']); ?></td>
+                    <td class="border-b px-4 py-2 font-bold"><?php echo htmlspecialchars($eventRow['clubOwner']); ?></td>
+                    <td class="border-b px-4 py-2"><?php echo htmlspecialchars($eventRow['eventDescription']); ?></td>
                     <td class="border-b px-4 py-2">
-                      Super important meeting about the owner’s lost hat and who
-                      took it!
+                        <div class="w-3/4 h-full rounded-lg bg-yellow-500">
+                            <?php echo htmlspecialchars($eventRow['date']); ?>
+                        </div>
                     </td>
+                    <td class="border-b px-4 py-2"><?php echo htmlspecialchars($eventRow['startTime']) . ' - ' . htmlspecialchars($eventRow['endTime']); ?></td>
                     <td class="border-b px-4 py-2">
-                      <div class="w-3/4 h-full rounded-lg bg-yellow-500">
-                        11/13/2024
-                      </div>
+                        <div class="flex items-center justify-center">
+                            <label class="flex items-center cursor-pointer relative">
+                                <input type="checkbox" class="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-300 checked:bg-slate-800 checked:border-slate-800" data-event-id="<?php echo $eventRow['event_Id']; ?>" <?php echo in_array($eventRow['event_Id'], $attendingEvents) ? 'checked' : ''; ?> />
+                                <span class="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor" stroke="currentColor" stroke-width="1">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </span>
+                            </label>
+                        </div>
                     </td>
-                    <td class="border-b px-4 py-2">1:30PM - 2:30 PM</td>
-                    <td class="border-b px-4 py-2">
-                      <div class="flex items-center justify-center">
-                        <label
-                          class="flex items-center cursor-pointer relative"
-                        >
-                          <input
-                            type="checkbox"
-                            checked
-                            class="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-300 checked:bg-slate-800 checked:border-slate-800"
-                            id="check"
-                          />
-                          <span
-                            class="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none"
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              class="h-3.5 w-3.5"
-                              viewBox="0 0 20 20"
-                              fill="currentColor"
-                              stroke="currentColor"
-                              stroke-width="1"
-                            >
-                              <path
-                                fill-rule="evenodd"
-                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                clip-rule="evenodd"
-                              ></path>
-                            </svg>
-                          </span>
-                        </label>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <div
-            class="w-full bg-white shadowMain rounded-lg"
-            style="height: 61rem"
-          >
-            <div class="text-main-blue font-roboto font-black text-5xl p-10">
-              CLUB LIST
-            </div>
-            <div class="w-full px-10">
-              <table class="table-auto w-full text-left">
-                <thead>
-                  <tr>
+                </tr>
+                <?php endwhile; ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="w-full bg-white shadowMain rounded-lg" style="height: 61rem">
+    <div class="text-main-blue font-roboto font-black text-5xl p-10">CLUB LIST</div>
+    <div class="w-full px-10">
+        <table class="table-auto w-full text-left">
+            <thead>
+                <tr>
                     <th class="px-4 py-2 border-b">CLUB NAME</th>
                     <th class="px-4 py-2 border-b">OWNER</th>
                     <th class="px-4 py-2 border-b">CLUB DESCRIPTION</th>
                     <th class="px-4 py-2 border-b">EMAIL</th>
-                    <th class="px-4 py-2 border-b">MEMEBERS</th>
+                    <th class="px-4 py-2 border-b">MEMBERS</th>
+                    <th class="px-4 py-2 border-b">MONTHLY PAYMENT</th>
                     <th class="px-4 py-2 border-b">JOIN CLUB</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td class="border-b px-4 py-2 font-bold">
-                      Super Cool Club
-                    </td>
-                    <td class="border-b px-4 py-2 font-bold">Lindsay Walton</td>
+                </tr>
+            </thead>
+            <tbody>
+                <?php while ($clubRow = $clubResults->fetch_assoc()): ?>
+                <tr>
+                    <td class="border-b px-4 py-2 font-bold"><?php echo htmlspecialchars($clubRow['clubName']); ?></td>
+                    <td class="border-b px-4 py-2 font-bold"><?php echo htmlspecialchars($clubRow['clubOwner']); ?></td>
+                    <td class="border-b px-4 py-2"><?php echo htmlspecialchars($clubRow['clubDescription']); ?></td>
+                    <td class="border-b px-4 py-2"><?php echo htmlspecialchars($clubRow['ownerEmail']); ?></td>
+                    <td class="border-b px-4 py-2"><?php echo htmlspecialchars($clubRow['members']); ?></td>
+                    <td class="border-b px-4 py-2"><?php echo htmlspecialchars($clubRow['monthlyPayment']); ?></td>
                     <td class="border-b px-4 py-2">
-                      The best club in the whole world! Only for the coolest
-                      people I like!
+                        <div class="flex items-center justify-center">
+                            <label class="flex items-center cursor-pointer relative">
+                            <input type="checkbox" class="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-300 checked:bg-slate-800 checked:border-slate-800" 
+                              data-club-id="<?php echo $clubRow['club_id']; ?>" <?php if (in_array($clubRow['club_id'], $userClubs)) echo 'checked'; ?> />
+                                <span class="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor" stroke="currentColor" stroke-width="1">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </span>
+                            </label>
+                        </div>
                     </td>
-                    <td class="border-b px-4 py-2">walton_148@gmail.com</td>
-                    <td class="border-b px-4 py-2">12</td>
-                    <td class="border-b px-4 py-2">
-                      <div class="flex items-center justify-center">
-                        <label
-                          class="flex items-center cursor-pointer relative"
-                        >
-                          <input
-                            type="checkbox"
-                            checked
-                            class="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-300 checked:bg-slate-800 checked:border-slate-800"
-                            id="check"
-                          />
-                          <span
-                            class="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none"
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              class="h-3.5 w-3.5"
-                              viewBox="0 0 20 20"
-                              fill="currentColor"
-                              stroke="currentColor"
-                              stroke-width="1"
-                            >
-                              <path
-                                fill-rule="evenodd"
-                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                clip-rule="evenodd"
-                              ></path>
-                            </svg>
-                          </span>
-                        </label>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <div
-            class="w-full bg-white shadowMain rounded-lg"
-            style="height: 61rem"
-          >
-            <div class="w-full p-10 flex items-center gap-10">
-              <div class="text-main-blue font-roboto font-black text-5xl">
-                ADMIN
-              </div>
-              <div class="flex gap-3">
-                <div class="w-12 h-6 rounded-full bg-yellow-500"></div>
-                <div class="font-roboto">PENDING</div>
-              </div>
-              <div class="flex gap-3">
-                <div class="w-12 h-6 rounded-full bg-green-500"></div>
-                <div class="font-roboto">ACCEPTED</div>
-              </div>
-              <div class="bg-main-purple w-24 h-10 rounded-lg">
-                <div
-                  class="text-white flex justify-center items-center w-full h-full"
-                >
-                  KICK USER
-                </div>
-              </div>
-            </div>
-            <div class="w-full px-10">
-    <table class="table-auto w-full text-left">
-        <thead>
-            <tr>
-                <th class="px-4 py-2 border-b">FIRST NAME</th>
-                <th class="px-4 py-2 border-b">LAST NAME</th>
-                <th class="px-4 py-2 border-b">EMAIL</th>
-                <th class="px-4 py-2 border-b">PHONE NUMBER</th>
-                <th class="px-4 py-2 border-b">STATUS</th>
-                <th class="px-4 py-2 border-b">ACCEPT</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php
-            $adminResult = displayAdmin($conn);
-            if ($adminResult->num_rows > 0) {
-                // Output data of each row
-                while($row = $adminResult->fetch_assoc()) {
-                    echo "<tr>";
-                    echo "<td class='border-b px-4 py-2 font-bold'>" . $row["first Name"] . "</td>";
-                    echo "<td class='border-b px-4 py-2 font-bold'>" . $row["last Name"] . "</td>";
-                    echo "<td class='border-b px-4 py-2'>" . $row["email"] . "</td>";
-                    echo "<td class='border-b px-4 py-2'>" . $row["phone"] . "</td>";
-                    echo "<td class='border-b px-4 py-2'>";
-                    if ($row["accepted"]) {
-                        echo "<div class='w-1/2 rounded-lg bg-green-500'>ACCEPTED</div>";
-                    } else {
-                        echo "<div class='w-1/2 rounded-lg bg-yellow-500'>PENDING</div>";
+                </tr>
+                <?php endwhile; ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="w-full bg-white shadowMain rounded-lg" style="height: 61rem">
+    <div class="w-full p-10 flex items-center gap-10">
+        <div class="text-main-blue font-roboto font-black text-5xl">ADMIN</div>
+        <div class="flex gap-3">
+            <div class="w-12 h-6 rounded-full bg-yellow-500"></div>
+            <div class="font-roboto">PENDING</div>
+        </div>
+        <div class="flex gap-3">
+            <div class="w-12 h-6 rounded-full bg-green-500"></div>
+            <div class="font-roboto">ACCEPTED</div>
+        </div>
+        <div class="bg-main-purple w-24 h-10 rounded-lg">
+            <div class="text-white flex justify-center items-center w-full h-full">KICK USER</div>
+        </div>
+    </div>
+    <div class="w-full px-10">
+        <table class="table-auto w-full text-left">
+            <thead>
+                <tr>
+                    <th class="px-4 py-2 border-b">FIRST NAME</th>
+                    <th class="px-4 py-2 border-b">LAST NAME</th>
+                    <th class="px-4 py-2 border-b">EMAIL</th>
+                    <th class="px-4 py-2 border-b">PHONE NUMBER</th>
+                    <th class="px-4 py-2 border-b">STATUS</th>
+                    <th class="px-4 py-2 border-b">ACCEPT</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                if ($adminResult->num_rows > 0) {
+                    while($row = $adminResult->fetch_assoc()) {
+                        echo "<tr>";
+                        echo "<td class='border-b px-4 py-2 font-bold'>" . $row["first Name"] . "</td>";
+                        echo "<td class='border-b px-4 py-2 font-bold'>" . $row["last Name"] . "</td>";
+                        echo "<td class='border-b px-4 py-2'>" . $row["email"] . "</td>";
+                        echo "<td class='border-b px-4 py-2'>" . $row["phone"] . "</td>";
+                        echo "<td class='border-b px-4 py-2'>";
+                        if ($row["accepted"]) {
+                            echo "<div class='w-1/2 rounded-lg bg-green-500'>ACCEPTED</div>";
+                        } else {
+                            echo "<div class='w-1/2 rounded-lg bg-yellow-500'>PENDING</div>";
+                        }
+                        echo "</td>";
+                        echo "<td class='border-b px-4 py-2'>";
+                        echo "<div class='flex items-center cursor-pointer relative'>";
+                        echo "<label class='flex items-center cursor-pointer relative'>";
+                        echo "<input type='checkbox' class='peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-300 checked:bg-slate-800 checked:border-slate-800' data-email='" . $row["email"] . "' data-user-id='" . $row["user_id"] . "' id='check' " . ($row["accepted"] ? "checked" : "") . " />";
+                        echo "<span class='absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none'>";
+                        echo "<svg xmlns='http://www.w3.org/2000/svg' class='h-3.5 w-3.5' viewBox='0 0 20 20' fill='currentColor' stroke='currentColor' stroke-width='1'>";
+                        echo "<path fill-rule='evenodd' d='M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z' clip-rule='evenodd'></path>";
+                        echo "</svg>";
+                        echo "</span>";
+                        echo "</label>";
+                        echo "</div>";
+                        echo "</td>";
+                        echo "</tr>";
                     }
-                    echo "</td>";
-                    echo "<td class='border-b px-4 py-2'>";
-                    echo "<div class='flex items-center cursor-pointer relative'>";
-                    echo "<label class='flex items-center cursor-pointer relative'>";
-                    echo "<input type='checkbox' class='peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-300 checked:bg-slate-800 checked:border-slate-800' id='check' " . ($row["accepted"] ? "checked" : "") . " />";
-                    echo "<span class='absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none'>";
-                    echo "<svg xmlns='http://www.w3.org/2000/svg' class='h-3.5 w-3.5' viewBox='0 0 20 20' fill='currentColor' stroke='currentColor' stroke-width='1'>";
-                    echo "<path fill-rule='evenodd' d='M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z' clip-rule='evenodd'></path>";
-                    echo "</svg>";
-                    echo "</span>";
-                    echo "</label>";
-                    echo "</div>";
-                    echo "</td>";
-                    echo "</tr>";
+                } else {
+                    echo "<tr><td colspan='6'>No results found</td></tr>";
                 }
-            } else {
-                echo "<tr><td colspan='6'>No results found</td></tr>";
-            }
-            $conn->close();
-            ?>
-        </tbody>
-    </table>
-            </div>
-          </div>
+                ?>
+            </tbody>
+        </table>
+    </div>
+</div>
         </div>
       </div>
     </div>
   </body>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('input[type="checkbox"]').forEach(function(checkbox) {
+        checkbox.addEventListener('change', function() {
+            var email = this.dataset.email;
+            var userId = this.dataset.userId;
+            var action = this.checked ? 'accept' : 'reject';
+
+            console.log('Sending request to updateUserStatus.php with email:', email, 'userId:', userId, 'and action:', action);
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'updateUserStatus.php', true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    console.log(xhr.responseText);
+                }
+            };
+            xhr.send('email=' + email + '&user_id=' + userId + '&action=' + action);
+        });
+    });
+});
+
+</script>
+  <script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('input[type="checkbox"]').forEach(function(checkbox) {
+        checkbox.addEventListener('change', function() {
+            var eventId = this.dataset.eventId;
+            var userId = <?php echo $_SESSION['user_id']; ?>;
+            var action = this.checked ? 'add' : 'remove';
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'updateUserEvent.php', true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    console.log(xhr.responseText);
+                }
+            };
+            xhr.send('event_id=' + eventId + '&user_id=' + userId + '&action=' + action);
+        });
+    });
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('input[type="checkbox"]').forEach(function(checkbox) {
+        checkbox.addEventListener('change', function() {
+            var clubId = this.dataset.clubId;
+            var userId = <?php echo $_SESSION['user_id']; ?>;
+            var action = this.checked ? 'add' : 'remove';
+
+            console.log('Sending request to sendEmail.php with email:', email, 'and action:', action);
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'updateUserClub.php', true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    console.log(xhr.responseText);
+                }
+            };
+            xhr.send('club_id=' + clubId + '&user_id=' + userId + '&action=' + action);
+        });
+    });
+});
+</script>
   <script src="./JS/navbar.js"></script>
 </html>

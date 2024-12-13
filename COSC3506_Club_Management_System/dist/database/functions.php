@@ -1,6 +1,7 @@
 <?php
 require 'db_connection.php';
 
+
 // Function to create a new user
 function createUser($conn, $firstname, $lastname, $email, $phone, $password)
 {
@@ -45,9 +46,52 @@ function createUser($conn, $firstname, $lastname, $email, $phone, $password)
     header("location: ../dist/index.php?message=waitforapproval");
 }
 
+function createClub($conn, $userID, $clubName, $clubOwner, $clubDiscription, $ownerEmail, $bannerImage, $monthlyPayment)
+{
+    $createClubSQL = "INSERT INTO `clublist`(`user_id`, `clubName`, `clubOwner`, `clubDescription`, `ownerEmail`, `bannerImage`, `monthlyPayment`) VALUES (?, ?, ?, ?, ?, ?, ?);";
+
+    $stmt = mysqli_stmt_init($conn);
+
+    if (!mysqli_stmt_prepare($stmt, $createClubSQL)) {
+        header("location: ../dist/index.php?error=stmtfailed");
+        exit();
+    }
+
+    echo "User ID: " . $userID . "<br>";
+    echo "Club Owner: " . $clubOwner . "<br>"; 
+    echo "Owner Email: " . $ownerEmail . "<br>";
+
+    mysqli_stmt_bind_param($stmt, "issssbi", $userID, $clubName, $clubOwner, $clubDiscription, $ownerEmail, $bannerImage, $monthlyPayment);
+    mysqli_stmt_send_long_data($stmt, 5, $bannerImage);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+
+    header("location: ../dist/home.php");
+}
+
+function createEvent($conn, $clubID, $eventName, $eventDiscription, $eventDate, $eventStartTime, $eventEndTime, $eventBannerImage) {
+    $createEventSQL = "INSERT INTO `eventlist`(`club_Id`, `eventName`, `eventDescription`, `date`, `startTime`, `endTime`, `eventBanner`) VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+    $stmt = mysqli_stmt_init($conn);
+
+    if (!mysqli_stmt_prepare($stmt, $createEventSQL)) {
+        header("location: ../dist/index.php?error=stmtfailed");
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "issssss", $clubID, $eventName, $eventDiscription, $eventDate, $eventStartTime, $eventEndTime, $eventBannerImage);
+    mysqli_stmt_send_long_data($stmt, 6, $eventBannerImage);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+
+    header("location: ../dist/club.php?club_id=" . $clubID);
+}
+
+
+
 function displayAdmin($conn)
 {
-    $sql = "SELECT `first Name`, `last Name`, `email`, `phone`, `accepted` FROM users";
+    $sql = "SELECT `user_id`, `first Name`, `last Name`, `email`, `phone`, `accepted` FROM users";
 
     $adminResult = mysqli_query($conn, $sql);
     $rowCheck = mysqli_num_rows($adminResult);

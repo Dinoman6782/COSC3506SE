@@ -1,19 +1,85 @@
-<?php 
+<?php
 session_start();
-if(!isset($_SESSION["user_id"])) 
-{
-    header("Location: ./login.php");
-    exit();
+require_once './database/db_connection.php';
+
+if (isset($_GET['club_id'])) {
+    $club_id = intval($_GET['club_id']);
+    $query = "SELECT * FROM clublist WHERE club_id = $club_id";
+    $result = mysqli_query($conn, $query);
+
+    if ($row = mysqli_fetch_assoc($result)) {
+        $clubName = htmlspecialchars($row['clubName']);
+        $bannerImage = base64_encode($row['bannerImage']);
+    } else {
+        echo "Club not found.";
+        exit;
+    }
+
+   
+
+$eventQuery = "SELECT * FROM eventlist WHERE club_Id = $club_id";
+$eventResult = mysqli_query($conn, $eventQuery);
+
+if (!$eventResult) {
+    echo "Error fetching events: " . mysqli_error($conn);
+    exit;
 }
-require_once './Includes/pageHeader.php'; 
+
+
+$user_id = $_SESSION['user_id'];
+$attendanceQuery = "SELECT event_id FROM userevent WHERE user_id = $user_id";
+$attendanceResult = mysqli_query($conn, $attendanceQuery);
+
+$attendingEvents = [];
+while ($attendanceRow = mysqli_fetch_assoc($attendanceResult)) {
+    $attendingEvents[] = $attendanceRow['event_id'];
+}
+
+} else {
+    echo "No club ID provided.";
+    exit;
+}
 ?>
+
+<?php require_once './Includes/pageHeader.php' ?>
+    <style>
+      .club-banner {
+        background-size: cover;
+        background-position: center;
+      }
+
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgb(0,0,0);
+        background-color: rgba(0,0,0,0.4);
+      }
+      .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+      }
+      .close:hover,
+      .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+      }
+    </style>
+  </head>
   <body
     class="bg-gradient-to-tr from-main-purple to-main-blue relative"
     style="z-index: -2"
   >
-<?php require_once './Includes/navBar.php'; ?>
-
-    <svg
+  <?php require_once './Includes/navBar.php'; ?>
+  <svg
       width="1920"
       height="924"
       viewBox="0 0 1920 924"
@@ -143,96 +209,220 @@ require_once './Includes/pageHeader.php';
         fill="white"
       />
     </svg>
-    <div class="z-10 w-full h-full py-5 px-20">
-      <div
-        class="bg-white bg-opacity-10 backdrop-blur-lg rounded-2xl shadow-lg border border-white border-opacity-30 w-full h-full p-5"
-      >
-        <div class="flex items-center w-full h-80">
-          <div
-            class="w-full h-full rounded-2xl flex items-center px-5 border-2 border-white shadow-2xl"
-            style="background-image: url(./Images/Essential-Books.jpg)"
-          >
-            <div class="font-roboto font-black text-8xl text-white">
-              Book Club
-            </div>
+<div class="z-10 w-full h-full py-5 px-20">
+  <div class="bg-white bg-opacity-10 backdrop-blur-lg rounded-2xl shadow-lg border border-white border-opacity-30 w-full h-full p-5">
+    <div class="flex items-center w-full h-80">
+      <div class="w-full h-full rounded-2xl flex items-center px-5 border-2 border-white shadow-2xl" style="background-image: url('data:image/jpeg;base64,<?php echo $bannerImage; ?>'); background-size: cover; background-position: center;">
+        <div class="font-roboto font-black text-8xl text-white text-shadow">
+          <?php echo $clubName; ?>
+        </div>
+      </div>
+    </div>
+    <hr class="border-none w-full bg-white mt-10 mb-10" style="height: 1px" />
+    <div class="h-16 w-full my-10 flex gap-10">
+      <button id="modalAddEvent" onclick="openModal()" class="bg-white bg-opacity-20 backdrop-blur-lg rounded-lg shadow-2xl border border-white border-opacity-30 w-36 h-full font-roboto font-semibold text-white text-lg tracking-wide">
+        Add Event
+      </button>
+      <button class="bg-white bg-opacity-20 backdrop-blur-lg rounded-lg shadow-2xl border border-white border-opacity-30 w-36 h-full font-roboto font-semibold text-white text-lg tracking-wide">
+        View Members
+      </button>
+    </div>
+    <hr class="border-none w-full bg-white mt-10 mb-10" style="height: 1px" />
+
+    <?php if (mysqli_num_rows($eventResult) > 0) { ?>
+    <?php while ($eventRow = mysqli_fetch_assoc($eventResult)) { ?>
+    <div class="bg-white bg-opacity-20 backdrop-blur-lg rounded-2xl shadow-2xl border border-white border-opacity-30 w-1/2 h-72 flex mb-10 p-5 gap-4">
+      <div class="size-60 rounded-2xl" style="background-image: url('data:image/jpeg;base64,<?php echo base64_encode($eventRow['eventBanner']); ?>'); background-size: cover; background-position: center;"></div>
+      <div class="w-3/5 h-full flex flex-col">
+        <div class="font-roboto font-bold text-xl text-white mb-5">
+          <?php echo htmlspecialchars($eventRow['eventName']); ?>
+        </div>
+        <div class="font-roboto font-thin text-base text-white">
+          Description: <?php echo htmlspecialchars($eventRow['eventDescription']); ?>
+        </div>
+        <div class="flex my-5 gap-5">
+          <div class="font-roboto font-thin text-base text-white">
+            Attending?:
           </div>
-        </div>
-        <hr
-          class="border-none w-full bg-white mt-10 mb-10"
-          style="height: 1px"
-        />
-        <div class="h-16 w-full my-10 flex gap-10">
-          <button
-            class="bg-white bg-opacity-20 backdrop-blur-lg rounded-lg shadow-2xl border border-white border-opacity-30rounded-lg w-36 h-full font-roboto font-semibold text-white text-lg tracking-wide"
-          >
-            Add Event
-          </button>
-          <button
-            class="bg-white bg-opacity-20 backdrop-blur-lg rounded-lg shadow-2xl border border-white border-opacity-30rounded-lg w-36 h-full font-roboto font-semibold text-white text-lg tracking-wide"
-          >
-            View Members
-          </button>
-        </div>
-        <hr
-          class="border-none w-full bg-white mt-10 mb-10"
-          style="height: 1px"
-        />
-        <div
-          class="bg-white bg-opacity-20 backdrop-blur-lg rounded-2xl shadow-2xl border border-white border-opacity-30 w-1/2 h-72 flex mb-10 p-5 gap-4"
-        >
-          <div
-            class="size-60 rounded-2xl"
-            style="
-              background-image: url(./Images/photo-1500964757637-c85e8a162699.jfif);
-            "
-          ></div>
-          <div class="w-3/5 h-full flex flex-col">
-            <div class="font-roboto font-bold text-xl text-white mb-5">
-              Reading Event
-            </div>
-            <div class="font-roboto font-thin text-base text-white">
-              Discription: Lorem ipsum dolor sit amet consectetur adipisicing
-              elit. Odit velit incidunt tempore modi facilis. Veritatis beatae
-              dolorum ipsum saepe deserunt quam et nihil atque eum sed, deleniti
-              similique minima natus?
-            </div>
-            <div class="flex my-5 gap-5">
-              <div class="font-roboto font-thin text-base text-white">
-                Attending?:
-              </div>
-              <div class="inline-flex items-center">
-                <label class="flex items-center cursor-pointer relative">
-                  <input
-                    type="checkbox"
-                    checked
-                    class="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-300 checked:bg-white checked:border-white"
-                    id="check"
-                  />
-                  <span
-                    class="absolute text-black opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      class="h-3.5 w-3.5"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                      stroke="currentColor"
-                      stroke-width="1"
-                    >
-                      <path
-                        fill-rule="evenodd"
-                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                        clip-rule="evenodd"
-                      ></path>
-                    </svg>
-                  </span>
-                </label>
-              </div>
-            </div>
+          <div class="inline-flex items-center">
+            <label class="flex items-center cursor-pointer relative">
+            <input
+              type="checkbox"
+              class="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-300 checked:bg-white checked:border-white"
+              id="check"
+              data-event-id="<?php echo $eventRow['event_Id']; ?>"
+              <?php echo in_array($eventRow['event_Id'], $attendingEvents) ? 'checked' : ''; ?>
+            />
+              <span
+                class="absolute text-black opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-3.5 w-3.5"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  stroke="currentColor"
+                  stroke-width="1"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clip-rule="evenodd"
+                  ></path>
+                </svg>
+              </span>
+            </label>
           </div>
         </div>
       </div>
     </div>
-  </body>
+    <?php } ?>
+<?php } else { ?>
+    <div class="font-roboto font-thin text-base text-white">
+      No events found.
+    </div>
+<?php } ?>
+
+  </div>
+</div>
+
+
+<!-- The Modal -->
+<div id="clubModal" class="modal">
+    <div class="w-1/3 px-20 py-5 bg-white shadow-xl rounded-lg"
+    style="margin: 15% auto;">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <form method="POST" action="./addEventAction.php" enctype="multipart/form-data">
+      <input type="hidden" name="clubId" value="<?php echo $club_id; ?>" />
+        <div class="flex flex-col gap-10 justify-center">
+        <div>
+          <div class="font-roboto font-light"> Event Name: </div>
+          <input
+                  class="shadow appearance-none border text-base rounded-xl w-full h-12 py-2 px-2 text-main-blue leading-tight focus:outline-none focus:shadow-outline placeholder:text-main-blue"
+                  id="studentnumber"
+                  type="text"
+                  name="eventName"
+                  placeholder="Enter Club Name Here"
+                  required
+                />
+        </div>
+        <div>
+          <div class="font-roboto font-light"> Date: </div>
+          <input
+                  class="shadow appearance-none border text-base rounded-xl w-full h-12 py-2 px-2 text-main-blue leading-tight focus:outline-none focus:shadow-outline placeholder:text-main-blue"
+                  id="studentnumber"
+                  type="date"
+                  name="eventDate"
+                  placeholder="Enter Event Name Here"
+                  required
+                />
+        </div>
+        <div class="flex justify-center items-center">
+          <div class="w-full mr-2">
+            <div class="font-roboto font-light"> Start Time: </div>
+              <input
+                  class="shadow appearance-none border text-base rounded-xl w-full h-12 py-2 px-2 text-main-blue leading-tight focus:outline-none focus:shadow-outline placeholder:text-main-blue"
+                  id="studentnumber"
+                  type="Time"
+                  name="eventStartTime"
+                  placeholder="Enter Club Name Here"
+                  required
+                />
+          </div>
+          <div class="w-full ml-2">
+            <div class="font-roboto font-light"> End Time: </div>
+              <input
+                  class="shadow appearance-none border text-base rounded-xl w-full h-12 py-2 px-2 text-main-blue leading-tight focus:outline-none focus:shadow-outline placeholder:text-main-blue"
+                  id="studentnumber"
+                  type="Time"
+                  name="eventEndTime"
+                  placeholder="Enter Club Name Here"
+                  required
+                />
+          </div>
+        </div>
+        <div>
+          <div class="font-roboto font-light">Event Description:  </div>
+          <textarea
+                  id="message"
+                  rows="4"
+                  name="eventDiscription"
+                  class="block resize-none text-base p-2.5 w-full shadow appearance-none border rounded-xl h-40 py-2 px-2 text-main-blue leading-tight focus:outline-none focus:shadow-outline placeholder:text-main-blue"
+                  placeholder="Describe your event here..."
+                  required
+                ></textarea>
+        </div>
+        <div>
+          <div class="flex items-center gap-10">
+            <div class="bg-black rounded-lg size-60 flex-shrink-0 flex justify-center items-center">
+                <input type="file" id="file-upload" name="eventBannerImage" style="display: none;" required />
+                <svg
+                  class="cursor-pointer"
+                  width="129"
+                  name="eventBannerSVG"
+                  height="129"
+                  viewBox="0 0 129 129"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M59.125 91.375H69.875V69.875H91.375V59.125H69.875V37.625H59.125V59.125H37.625V69.875H59.125V91.375ZM64.5 118.25C57.0646 118.25 50.0771 116.861 43.5375 114.084C36.9979 111.218 31.3094 107.366 26.4719 102.528C21.6344 97.6906 17.7823 92.0021 14.9156 85.4625C12.1385 78.9229 10.75 71.9354 10.75 64.5C10.75 57.0646 12.1385 50.0771 14.9156 43.5375C17.7823 36.9979 21.6344 31.3094 26.4719 26.4719C31.3094 21.6344 36.9979 17.8271 43.5375 15.05C50.0771 12.1833 57.0646 10.75 64.5 10.75C71.9354 10.75 78.9229 12.1833 85.4625 15.05C92.0021 17.8271 97.6906 21.6344 102.528 26.4719C107.366 31.3094 111.173 36.9979 113.95 43.5375C116.817 50.0771 118.25 57.0646 118.25 64.5C118.25 71.9354 116.817 78.9229 113.95 85.4625C111.173 92.0021 107.366 97.6906 102.528 102.528C97.6906 107.366 92.0021 111.218 85.4625 114.084C78.9229 116.861 71.9354 118.25 64.5 118.25ZM64.5 107.5C76.5042 107.5 86.6719 103.334 95.0031 95.0031C103.334 86.6719 107.5 76.5042 107.5 64.5C107.5 52.4958 103.334 42.3281 95.0031 33.9969C86.6719 25.6656 76.5042 21.5 64.5 21.5C52.4958 21.5 42.3281 25.6656 33.9969 33.9969C25.6656 42.3281 21.5 52.4958 21.5 64.5C21.5 76.5042 25.6656 86.6719 33.9969 95.0031C42.3281 103.334 52.4958 107.5 64.5 107.5Z"
+                    fill="white"
+                  />
+                </svg>
+             </div>
+            <div class="font-roboto font-light text-xl">Please Input an Image that has an aspect ratio of 1:1. The Image size should also be less then 1 MB.</div>
+          </div>
+       </div>
+      <div class="flex items-center justify-center">
+        <button id="create" href="#" name="createEvent" class="bg-main-blue rounded-lg w-20 text-center text-white font-roboto font-medium">Create</button>
+      </div>
+     </form>
+     </div>
+    </div>
+  </div>
+  <script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('input[type="checkbox"]').forEach(function(checkbox) {
+        checkbox.addEventListener('change', function() {
+            var eventId = this.dataset.eventId;
+            var userId = <?php echo $_SESSION['user_id']; ?>;
+            var action = this.checked ? 'add' : 'remove';
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'updateUserEvent.php', true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    console.log(xhr.responseText);
+                }
+            };
+            xhr.send('event_id=' + eventId + '&user_id=' + userId + '&action=' + action);
+        });
+    });
+});
+</script>
+
+
+
+  <script>
+     function openModal(){
+      document.getElementById('clubModal').style.display = "block";
+     }
+     function closeModal() {
+      document.getElementById('clubModal').style.display = "none";
+    }
+  </script>
+   <script>
+    document.querySelector('svg[name="eventBannerSVG"]').addEventListener('click', function() {
+  document.getElementById('file-upload').click();
+});
+</script>
   <script src="./JS/navbar.js"></script>
 </html>
+
+
+
+  
+ 
+  

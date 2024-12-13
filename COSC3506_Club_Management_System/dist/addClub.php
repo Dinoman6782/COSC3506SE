@@ -18,7 +18,7 @@ if(!isset($_SESSION["user_id"]))
     <div class="w-full h-full relative">
       <svg
         class="spacer"
-        style="z-index: -1"
+        style="z-index: -1;"
         width="1920"
         height="744"
         viewBox="0 0 1920 744"
@@ -46,6 +46,7 @@ if(!isset($_SESSION["user_id"]))
         </defs>
       </svg>
 
+      <form action="./addClubAction.php" method="POST" enctype="multipart/form-data">
       <div class="h-full w-full px-28 py-10">
         <div class="text-main-blue font-roboto font-black text-7xl">
           CLUB BANNER
@@ -53,8 +54,11 @@ if(!isset($_SESSION["user_id"]))
         <div class="bg-white w-full h-96 rounded-lg shadowMain mt-5 p-2">
           <div class="bg-black w-full h-full rounded-lg">
             <div class="flex justify-center items-center w-full h-full">
+            <input type="file" id="file-upload" name="bannerImage" style="display: none;" required />
               <svg
+              class="cursor-pointer"
                 width="129"
+                name="clubBannerSVG"
                 height="129"
                 viewBox="0 0 129 129"
                 fill="none"
@@ -65,14 +69,15 @@ if(!isset($_SESSION["user_id"]))
                   fill="white"
                 />
               </svg>
+
             </div>
           </div>
         </div>
         <div
           class="bg-white w-full rounded-lg shadowMain mt-5 p-2"
-          style="height: 26rem"
+          style="height: 30rem"
         >
-          <form action="" method="">
+          
             <div class="flex flex-col gap-6 w-full h-full p-5">
               <div>
                 <label
@@ -83,6 +88,7 @@ if(!isset($_SESSION["user_id"]))
                   class="shadow appearance-none border text-base rounded-xl w-full h-12 py-2 px-2 text-main-blue leading-tight focus:outline-none focus:shadow-outline placeholder:text-main-blue"
                   id="studentnumber"
                   type="text"
+                  name="clubName"
                   placeholder="Enter Club Name Here"
                   required
                 />
@@ -96,15 +102,30 @@ if(!isset($_SESSION["user_id"]))
                 <textarea
                   id="message"
                   rows="4"
+                  name="clubDiscription"
                   class="block resize-none text-base p-2.5 w-full shadow appearance-none border rounded-xl h-40 py-2 px-2 text-main-blue leading-tight focus:outline-none focus:shadow-outline placeholder:text-main-blue"
                   placeholder="Write your thoughts here..."
                   required
                 ></textarea>
               </div>
+              <div>
+                <label
+                  for="message"
+                  class="text-lg font-roboto text-main-blue tracking-widest pl-1"
+                  >Monthly Payment</label
+                >
+                <select name="monthlyPayment" id="amount" required
+                class="block resize-none text-base p-2.5 w-20 shadow appearance-none border rounded-xl h-10 py-2 px-2 text-main-blue leading-tight focus:outline-none focus:shadow-outline placeholder:text-main-blue">
+                  <option value="0">$0</option>
+                  <option value="2">$2</option>
+                  <option value="10">$10</option>
+                  <option value="20">$20</option>
+                </select>
+              </div>
               <div class="flex items-center justify-center w-full h-full">
                 <button
                   type="submit"
-                  name="creatClub"
+                  name="createClub"
                   class="bg-transparent hover:bg-main-purple text-main-purple font-semibold hover:text-white py-2 px-4 border border-main-purple hover:border-transparent rounded font-roboto"
                 >
                   CREATE CLUB
@@ -117,4 +138,9 @@ if(!isset($_SESSION["user_id"]))
     </div>
   </body>
   <script src="./JS/navbar.js"></script>
+  <script>
+    document.querySelector('svg[name="clubBannerSVG"]').addEventListener('click', function() {
+  document.getElementById('file-upload').click();
+});
+</script>
 </html>
